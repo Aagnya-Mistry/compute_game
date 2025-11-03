@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000';
+// Read backend base URL from environment so the deployed frontend can talk to Render
+// In Create React App, client env vars must be prefixed with REACT_APP_
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
 
 const GameScreen = ({ playerName, startingScore, onGameEnd }) => {
   const [currentMedia, setCurrentMedia] = useState(null);

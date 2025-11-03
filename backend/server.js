@@ -6,7 +6,23 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+// Allow configuring allowed frontend origin(s) via environment variable.
+// Set FRONTEND_ORIGIN in Render to your Vercel app URL (e.g. https://your-app.vercel.app)
+// You can provide multiple origins separated by commas: "https://your-app.vercel.app,http://localhost:3000"
+const allowedOrigins = (process.env.FRONTEND_ORIGIN || 'https://your-vercel-app.vercel.app,http://localhost:3000')
+  .split(',')
+  .map(s => s.trim())
+  .filter(Boolean);
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (e.g., mobile apps, curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) return callback(null, true);
+    return callback(new Error('CORS not allowed by server'));
+  },
+  credentials: true
+}));
 app.use(express.json());
 
 // Serve static files from assets directory
