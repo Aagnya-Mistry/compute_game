@@ -6,13 +6,11 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Allow configuring allowed frontend origin(s) via environment variable.
-// Set FRONTEND_ORIGIN in Render to your Vercel app URL (e.g. https://your-app.vercel.app)
-// You can provide multiple origins separated by commas: "https://your-app.vercel.app,http://localhost:3000"
-const allowedOrigins = (process.env.FRONTEND_ORIGIN || 'https://your-vercel-app.vercel.app,http://localhost:3000')
-  .split(',')
-  .map(s => s.trim())
-  .filter(Boolean);
+// Allow your Vercel domain and localhost for development
+const allowedOrigins = [
+  'https://compute-game-n4f2gm6uq-aagnya-mistrys-projects.vercel.app',
+  'http://localhost:3000'
+];
 
 app.use(cors({
   origin: function (origin, callback) {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import StartScreen from './components/StartScreen';
 import GameScreen from './components/GameScreen';
 import ResultsScreen from './components/ResultsScreen';
+import ApiDebug from './components/ApiDebug';
 
 function App() {
   const [gameState, setGameState] = useState('start'); // 'start', 'playing', 'results'
@@ -29,6 +30,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-dark-bg via-purple-900 to-dark-bg">
+      <ApiDebug />
       {gameState === 'start' && (
         <StartScreen onStart={handleStartGame} />
       )}
