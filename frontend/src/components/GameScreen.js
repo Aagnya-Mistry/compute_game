@@ -82,15 +82,28 @@ const GameScreen = ({ playerName, startingScore, onGameEnd }) => {
     setTimeLeft(10);
 
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/random-media`, {
+      const requestUrl = `${API_BASE_URL}/api/random-media`;
+      // Helpful debug log for deployed builds to see which URL is being requested
+      console.log('[GameScreen] requesting media from:', requestUrl, 'session-id:', sessionId);
+
+      const response = await axios.get(requestUrl, {
         headers: { 'session-id': sessionId },
       });
+
+      console.log('[GameScreen] media response:', response.status, response.data);
 
       setCurrentMedia(response.data);
       setIsLoading(false);
     } catch (error) {
-      console.error('Error loading media:', error);
-      alert('Failed to load media. Please try again.');
+      // Log detailed error info for diagnostics
+      console.error('[GameScreen] Error loading media:', error);
+      if (error.response) {
+        console.error('Response data:', error.response.data);
+        console.error('Response status:', error.response.status);
+      }
+      // Show a slightly more informative alert to the user
+      const status = error.response ? ` (status ${error.response.status})` : '';
+      alert(`Failed to load media${status}. Please try again.`);
       setIsLoading(false);
     }
   };
