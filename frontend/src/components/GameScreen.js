@@ -1,9 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-
-// Read backend base URL from environment so the deployed frontend can talk to Render
-// In Create React App, client env vars must be prefixed with REACT_APP_
-const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+import { mediaApi } from '../services/api';
 
 const GameScreen = ({ playerName, startingScore, onGameEnd }) => {
   const [currentMedia, setCurrentMedia] = useState(null);
@@ -82,13 +78,7 @@ const GameScreen = ({ playerName, startingScore, onGameEnd }) => {
     setTimeLeft(10);
 
     try {
-      const requestUrl = `${API_BASE_URL}/api/random-media`;
-      // Helpful debug log for deployed builds to see which URL is being requested
-      console.log('[GameScreen] requesting media from:', requestUrl, 'session-id:', sessionId);
-
-      const response = await axios.get(requestUrl, {
-        headers: { 'session-id': sessionId },
-      });
+      const response = await mediaApi.getRandomMedia(sessionId);
 
       console.log('[GameScreen] media response:', response.status, response.data);
 
@@ -223,14 +213,14 @@ const GameScreen = ({ playerName, startingScore, onGameEnd }) => {
 
               {currentMedia.type === 'image' ? (
                 <img
-                  src={`${API_BASE_URL}${currentMedia.url}`}
+                  src={`${process.env.REACT_APP_API_URL || 'https://compute-game.onrender.com'}${currentMedia.url}`}
                   alt="Question"
                   className={`max-w-full max-h-[500px] mx-auto rounded-lg object-contain ${showFeedback && !isCorrect ? 'animate-glitch' : 'animate-fade-in'}`}
                   onError={() => handleSkip()}
                 />
               ) : (
                 <video
-                  src={`${API_BASE_URL}${currentMedia.url}`}
+                  src={`${process.env.REACT_APP_API_URL || 'https://compute-game.onrender.com'}${currentMedia.url}`}
                   controls
                   className="max-w-full max-h-[500px] mx-auto rounded-lg animate-fade-in"
                   onError={() => handleSkip()}
